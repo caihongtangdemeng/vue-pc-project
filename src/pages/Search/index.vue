@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <div>
+     <!-- 商品分类导航 -->
+    <TypeNav />
+    
+  </div>
 </template>
 
 <script>

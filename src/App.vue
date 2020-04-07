@@ -13,10 +13,13 @@
   import {reqBaseCategoryList} from './api'
 export default {
   name: 'App',
-  async mounted(){
+ mounted(){
     // const result=await reqBaseCategoryList()
     // console.log('result',result)
+    //触发vuex中的getBaseCategoryList  actions调用 切换路由时只发一次请求
+    this.$store.dispatch('getBaseCategoryList') 
   },
+  
   components:{
     Header,
     Footer

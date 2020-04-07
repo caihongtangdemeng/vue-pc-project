@@ -86,7 +86,10 @@
         <Footer v-if="!$route.meta.isHideFooter"/>
 
 ## Home组件
-    Home静态路由组件
+    Home静态路由组件 
     从Home组件中抽取各个子组件并使用
         全局组件
         局部组件
+
+
+    
