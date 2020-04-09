@@ -16,10 +16,7 @@
     <Like />
 
     <!--楼层-->
-    <Floor />
-
-    <!--楼层-->
-    <Floor />
+    <Floor v-for="floor in floors" :key="floor.id" :floor="floor"/>
 
     <!--商标-->
     <Brand />
@@ -33,11 +30,18 @@
   import Like from './Like/Like'
   import ListContainer from './ListContainer/ListContainer'
   import Rank from './Rank/Rank'
+
+  import {mapState} from 'vuex'
   export default {
     name: 'Home',
     mounted(){
       this.$store.dispatch('getBanners')
       this.$store.dispatch('getFloors')
+    },
+    computed:{
+      ...mapState({
+        floors:state=>state.home.floors
+      })
     },
     components: { // 局部注册, 只能在当前组件中使用
       TodyRecommend,
