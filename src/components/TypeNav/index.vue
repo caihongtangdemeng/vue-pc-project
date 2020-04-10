@@ -94,7 +94,14 @@ export default {
           }else if(category3id){
             query.category3Id=category3id
           }
-        this.$router.push({path:'/search',query})//实现路由跳转,并携带query参数
+
+        const path=this.$route.path  //在搜索页跳转，可能携带params和query参数
+        if(path.indexOf('/search')===0){
+            this.$router.replace({path,query})
+        }else{
+          this.$router.push({path:'/search',query})//实现路由跳转,首页--->搜索页 ，并携带query参数
+        }
+
           }
     },
       hideFirst(){

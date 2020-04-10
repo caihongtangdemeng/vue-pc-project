@@ -8,6 +8,8 @@ export const reqLogin=(mobile,password)=>ajax.post('/user/passport/login',{mobil
 export const reqBanners=()=>mockAjax.get('/banners')
 export const reqFloors=()=>mockAjax.get('/floors')
 
+export const reqProductList = (searchParams) => ajax.post('/list',searchParams)
+
 // reqBanners().then(result=>{
 //   console.log('result',result)
 // })

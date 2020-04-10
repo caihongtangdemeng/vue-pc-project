@@ -38,12 +38,15 @@
                 baseCategoryList: []
             }
         }
+    5). vuex与api交互
+        异步action: 调用api接口请求函数  ==> 成功之后commit  ===> 调用mutation  ==> 更新状态数据
 ## TypeNav动态组件
     1). 组件与vuex交互, 动态显示3级分类
-         触发vuex中的getBaseCategoryList  actions调用:
+        a. 触发vuex中的getBaseCategoryList  actions调用:
          mounted(){this.$store.dispatch('getBaseCategoryList')}
-        获取state数据：import {mapState} from 'vuex'     
+        b.将vuex中的数据读取到组件的计算属性：import {mapState} from 'vuex'     
         computed:{...mapState({categoryList:state=>state.home.baseCategoryList})}
+        c.在模板中显示读取到的计算属性数据
 
         [
             {categoryName:'一级',
@@ -63,13 +66,15 @@
             }
         ]
     2). 控制2/3级分类列表的显示与隐藏
-        item_on:index===currentIndex
-    3). 点击某个分类项, 跳转到search路由: /search?categoryName=电子书刊&category2Id=1
+        设计一个标识当前分类下标的数据: currentIndex=-1
+        当前分类的类名: :class="{item_on: currentIndex===index}"
+        item_on类的样式: 背景色 / 下级列表display: block
+    3). 点击某个分类项, 跳转到search路由 带query参数: /search?categoryName=电子书刊&category2Id=1
         categoryName: xxx
         category1Id: 1级分类ID
         category2Id: 2级分类ID
         category3Id: 3级分类ID
-        path:'' query:{}
+        path:'' query:{}   /  name:''  params:{}
 
 ##  函数节流
         减少触发次数，每次在间隔时间后触发
@@ -103,13 +108,5 @@
     原因: 触发请求的代码写在TypeNav组件中, 每渲染一次, 就会发一次请求
     解决: 触发请求的代码写在App中就可以 this.$store.dispatch('')
 
-## mock数据接口
-    问题: 首页只有分类列表的接口, 其它数据的接口还没有写好, 咋办?
-    解决: 自己mock数据接口
 
-### 设计json数据
-
-### 如何实现mock?
-    1). 使用mockjs来实现mock接口
-    Mock.mock('路径',{结构})
 
