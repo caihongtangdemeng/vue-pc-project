@@ -12,6 +12,9 @@ Vue.component('TypeNav',TypeNav)
 Vue.component('Carousel',Carousel)
 
 new Vue({
+  beforeCreate(){
+    Vue.prototype.$bus=this//将当前VM作为事件总线保存到vue原型对象上，所有组件都可见
+  },
   render: h => h(App),
   router,
   store

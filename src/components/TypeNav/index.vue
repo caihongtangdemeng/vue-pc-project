@@ -95,9 +95,9 @@ export default {
             query.category3Id=category3id
           }
 
-        const path=this.$route.path  //在搜索页跳转，可能携带params和query参数
+        const {path,params}=this.$route  //在搜索页跳转，可能携带params和query参数
         if(path.indexOf('/search')===0){
-            this.$router.replace({path,query})
+            this.$router.replace({name:'search',params,query})
         }else{
           this.$router.push({path:'/search',query})//实现路由跳转,首页--->搜索页 ，并携带query参数
         }

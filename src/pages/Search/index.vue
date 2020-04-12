@@ -11,38 +11,38 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x" v-if="options.categoryName" >{{options.categoryName}}<i>×</i> </li>
-            <li class="with-x" v-if="options.keyword">{{options.keyword}}<i>×</i></li>
+            <li class="with-x" v-if="options.categoryName" >{{options.categoryName}}<i @click="removeCategory">×</i> </li>
+            <li class="with-x" v-if="options.keyword">{{options.keyword}}<i @click="removeKeyword">×</i></li>
+            <li class="with-x" v-if="options.trademark">{{options.trademark}}<i @click="removeTrademark">×</i></li>
+            <li class="with-x" v-for="(prop,index) in options.props" :key="prop">{{prop}}<i @click="removeProp(index)">×</i></li>
         
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector :setTrademark="setTrademark" :addProp="addProp"/>
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isActive('1')}"  @click="setOrder('1')">
+                  <a href="javascript:">综合 {{getOrderIcon('1')}}</a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a href="javascript:">销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a href="javascript:">新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a href="javascript:">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
+                <li :class="{active:isActive('2')}" @click="setOrder('2')">
+                  <a href="javascript:">价格 {{getOrderIcon('2')}}</a>
                 </li>
-                <li>
-                  <a href="#">价格⬇</a>
-                </li>
+               
               </ul>
             </div>
           </div>
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import SearchSelector from './SearchSelector/SearchSelector'
   export default {
     data(){
@@ -139,28 +139,101 @@
         ...params
       }
       this.options=options
-      this.$store.dispatch('getProductList',this.options)
+      this.getProductList()
     },
     watch:{
       '$route'(to,from){
         const{query,params}=to
         const options={
           ...this.options,
+          category1Id:'',
+          category2Id:'',
+          category3Id:'',
+          categoryName:'',
           ...query,
-          ...params
+          ...params,
         }
         this.options=options
         this.getProductList()
       }
     },
+     computed:{
+      ...mapGetters(['goodsList'])
+    },
     methods:{
       getProductList(){
         this.$store.dispatch('getProductList',this.options)
+      },
+
+      isActive(orderFlag){
+        return this.options.order.indexOf(orderFlag)===0
+      },
+
+      setOrder(orderFlag){
+        let [flag,orderType] =this.options.order.split(':')
+        if(flag===orderFlag){
+          orderType = orderType==='desc'?'asc':'desc'
+        }else{
+          flag=orderFlag
+          orderType='desc'
+        }
+
+        this.options.order=flag+':'+orderType
+        this.getProductList()
+       
+      },
+      getOrderIcon(orderFlag){
+        const [flag, orderType]=this.options.order.split(':')
+        if(orderFlag===flag){
+          return orderType==='desc'? '⬇' : '⬆'
+        }else{
+          return ''
+        }
+      },
+
+      setTrademark(id,name){
+        this.options.trademark=id+':'+name
+        this.getProductList()
+        // this.$set(this.options,'trademark',id+':'+name)
+      },
+
+      addProp(id,value,name){
+        const prop=`${id}:${value}:${name}`
+        if(this.options.props.indexOf(prop)===-1){
+          this.options.props.push(prop)
+          this.getProductList()
+        }
+      },
+      removeProp(index){
+        this.options.props.splice(index,1)
+        this.getProductList()
+      },
+
+      removeCategory(){
+        this.options.categoryName=''
+        this.options.category1Id=''
+        this.options.category2Id=''
+        this.options.category3Id=''
+        this.$router.replace(this.$route.path) //跳转路由去除地址栏query参数
+      },
+
+      removeKeyword(){
+        this.options.keyword=''
+        this.$router.replace({path:'/search',query:this.$route.query})//跳转路由去除地址栏params参数
+        this.$bus.$emit('removeKeyword') // 通过全局总线分发删除了关键字的自定义事件
+      },
+
+      removeTrademark(){
+        this.options.trademark=''
+        this.getProductList()
+        // this.$delete(this.options,'trademark')
       }
+
+
+
+
     },
-    computed:{
-      ...mapGetters(['goodsList'])
-    },
+   
 
     components: {
       SearchSelector

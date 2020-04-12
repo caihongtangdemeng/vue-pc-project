@@ -10,6 +10,13 @@ const mutations={
 }
 const actions={
   async getProductList({commit},searchParams){
+    searchParams={...searchParams} 
+    Object.keys(searchParams).forEach(key=>{
+      if(searchParams[key]===''){
+        delete searchParams[key] //删除空串属性
+      }
+    })
+
     const result=await reqProductList(searchParams)
     if(result.code===200){
       const productList=result.data

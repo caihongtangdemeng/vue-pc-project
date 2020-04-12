@@ -50,12 +50,33 @@
     },
     methods: {
       toSearch() {
+        const {path,query}=this.$route
         if(this.keyword){
-          this.$router.push({name:'search',params:{keyword:this.keyword}})
+          if(path.indexOf('/search')===0){ //关键字跳转在搜索页面
+            this.$router.push({
+              name:'search',
+              params:{keyword:this.keyword},
+              query
+            })
+          }else{
+              //关键字跳转不在搜索页面
+            this.$router.push({name:'search',params:{keyword:this.keyword}})
+          }
         }else{
+           if(path.indexOf('/search')===0){ //分类跳转在搜索页面
+            this.$router.push({name:'search',query})
+          }else{
+              //分类跳转不在搜索页面
           this.$router.push({name:'search'})
+          }
         }
       }
+    },
+    mounted(){
+      // 通过全局总线绑定removeKeyword事件监听
+      this.$bus.$on('removeKeyword',()=>{
+        this.keyword=''
+      })
     }
   }
 </script>
