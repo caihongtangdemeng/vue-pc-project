@@ -14,6 +14,9 @@ export const reqDetailInfo=(skuId)=>ajax.get(`/item/${skuId}`)
 //   console.log('result',result)
 // })
 
+export const reqAddToCart=(skuId,skuNum)=>ajax.post(`/cart/addToCart/${skuId}/${skuNum}`)
 
+export const reqCartList=()=>ajax.get('/cart/cartList')
 
-
+export const reqCheckCartItem=(skuId,isChecked)=>ajax.get(`/cart/checkCart/${skuId}/${isChecked}`)
+export const reqDeleteCartItem=(skuId)=>ajax.delete(`/cart/deleteCart/${skuId}`)

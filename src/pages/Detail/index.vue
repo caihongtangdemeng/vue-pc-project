@@ -75,12 +75,12 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum">
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum--" v-if="skuNum>1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addToCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -339,7 +339,8 @@
     name: 'Detail',
     data(){
       return{
-        currentImgIndex:0
+        currentImgIndex:0,
+        skuNum:1
       }
     },
 
@@ -370,7 +371,23 @@
 
       changeCurrentIndex(index){
         this.currentImgIndex=index
+      },
+      async addToCart(){
+        const query={skuId:this.skuInfo.id,skuNum:this.skuNum}
+        const errorMsg=await this.$store.dispatch('addToCart',query)
+        this.callback(errorMsg)
+      },
+      callback(errorMsg){
+        const query={skuId:this.skuInfo.id,skuNum:this.skuNum}
+        if(!errorMsg){
+          window.sessionStorage.setItem('SKU_INFO_KEY',JSON.stringify(this.skuInfo))
+          this.$router.push({path:'/addcartsuccess',query})
+        }else{
+          alert(errorMsg)
+        }
       }
+
+
     },
     
     components: {
