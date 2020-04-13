@@ -23,5 +23,11 @@ Vue.use(VueRouter)
 export default new VueRouter({
   // mode:'hash',//路由路径带#号
   mode:'history',
-  routes
+  routes,
+  scrollBehavior(to,from,savedPosition){
+    return{
+      x:0,
+      y:0
+    }
+  }
 })

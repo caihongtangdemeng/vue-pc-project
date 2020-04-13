@@ -9,7 +9,7 @@ export const reqBanners=()=>mockAjax.get('/banners')
 export const reqFloors=()=>mockAjax.get('/floors')
 
 export const reqProductList = (searchParams) => ajax.post('/list',searchParams)
-
+export const reqDetailInfo=(skuId)=>ajax.get(`/item/${skuId}`)
 // reqBanners().then(result=>{
 //   console.log('result',result)
 // })

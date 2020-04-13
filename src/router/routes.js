@@ -2,7 +2,7 @@ import Home from '@/pages/Home'
 import Search from '@/pages/Search'
 import Register from '@/pages/Register'
 import Login from '@/pages/Login'
-
+import Detail from '@pages/Detail'
 
 export default[
   {
@@ -15,6 +15,11 @@ export default[
     component:Search,
     porps:(route)=>({keyword1:route.params.keyword,keyword2:route.query.keyword})
   }, 
+  {
+    name:'Detail',
+    path:'/detail/:skuId',
+    component:Detail,
+  },
   {
     path:'/register',
     component:Register,
