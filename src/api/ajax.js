@@ -1,12 +1,15 @@
 import axios from 'axios'
 import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import store from '@/store'
 const ajax =axios.create({
   baseURL:'/api',
   timeout:20000
 })
 ajax.interceptors.request.use((config)=>{
   Nprogress.start()
+
+  config.headers['userTempId']=store.state.user.userTempId
   return config
 })
 ajax.interceptors.response.use(

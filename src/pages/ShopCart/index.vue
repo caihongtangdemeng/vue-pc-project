@@ -13,7 +13,8 @@
       <div class="cart-body">
         <ul class="cart-list" v-for="(item,index) in cartList"  :key="item.id">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" v-model="item.isChecked">
+            <input type="checkbox" name="chk_list" :checked="item.isChecked" 
+             @change="checkCartItem(item,$event)">
           </li>
           <li class="cart-list-con2">
             <img :src="item.imgUrl">
@@ -26,15 +27,16 @@
             <span class="price">{{item.cartPrice}}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" value="1" minnum="1" class="itxt" v-model="item.skuNum">
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a href="javascript:void(0)" class="mins" @click="changeItemCount(item,-1)">-</a>
+            <input autocomplete="off" type="text"  class="itxt" 
+              :value="item.skuNum"  @change="changeItemCount(item,$event.target.value*1-item.skuNum)">
+            <a href="javascript:void(0)" class="plus" @click="changeItemCount(item,1)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{item.skuNum*item.cartPrice}}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a href="javescript:" class="sindelet" @click="deleteCartItem(item.skuId)">删除</a>
             <br>
             <a href="#none">移到收藏</a>
           </li>
@@ -45,11 +47,11 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" v-model="isAllChecked">
+        <input class="chooseAll" type="checkbox" :checked="isAllChecked" @change="checkAll">
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a href="javascript:" @click="deleteCartItems">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -76,7 +78,89 @@
       ...mapState({
         cartList:state=>state.shopCart.cartList
       }),
-      ...mapGetters(['totalCount','totalPrice','isAllChecked'])
+      ...mapGetters(['totalCount','totalPrice','isAllChecked','selectedItems'])
+    },
+    methods:{
+
+      //+ -商品数量
+        changeItemCount(item,changeNum){
+          if(item.skuNum+changeNum>0){
+            this.$store.dispatch('addToCart2',{skuId:item.skuId,skuNum:changeNum})
+          }
+        },
+
+      // 删除某一项
+     async deleteCartItem(skuId){
+        if(window.confirm('确定删除此项么？')){
+        //  const errorMsg=await this.$store.dispatch('deleteCartItem',skuId)
+        // if(errorMsg){
+        //   alert(errorMsg)
+        // }else{
+        //   this.$store.dispatch('getCartList')
+        // }
+
+        try{
+            await this.$store.dispatch('deleteCartItem',skuId)
+            this.$store.dispatch('getCartList')
+        } catch(error){
+          alert(error.message)
+        }
+        }
+      },
+      //删除所有勾选项
+      deleteCartItems(){
+        //获取所有勾选项
+        const {selectedItems} =this
+        if(selectedItems.length===0) return
+
+        if(window.confirm('确定删除此项么?')){
+
+            const promises=[]
+            selectedItems.forEach(item=>{
+              const promise=this.$store.dispatch('deleteCartItem2',item.skuId)
+              promises.push(promise)
+            })
+        Promise.all(promises).then(
+          value=>{
+            this.$store.dispatch('getCartList')
+          },
+          error=>{
+            alert(error.message||'删除失败')
+          }
+        )
+        }
+      },
+      //更改勾选项状态
+      checkCartItem(item){
+        const isChecked=item.isChecked===1 ? 0 :1
+        const {skuId} =item
+        this.$store.dispatch('checkCartItem',{skuId,isChecked}).then(
+          ()=>{
+            this.$store.dispatch('getCartList')
+          },error=>{
+            alert(error.message)
+          }
+        )  
+        },
+       //全选全不选
+      checkAll(event){
+        const isChecked=event.target.checked*1
+        const promises=this.cartList.reduce((pre,item)=>{
+          const promise=this.$store.dispatch('checkCartItem',{skuId:item.skuId,isChecked})
+          pre.push(promise)
+          return pre
+        },[])
+        Promise.all(promises).then(  //try{}catch{}也行
+          value=>{
+            this.$store.dispatch('getCartList')
+          },error=>{
+            alert(error.message)
+          }
+        )
+
+      }
+
+
     },
     mounted(){
       this.$store.dispatch('getCartList')
