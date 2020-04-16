@@ -77,16 +77,29 @@
     methods:{
       dl(){
         const {mobile,password} =this
-        if(mobile!==userInfo.mobile||password!==userInfo.password){
-          alert('错误')
-          return
-        }
-        try{
-          this.$store.dispatch('login',mobile,password)
-          this.$router.replace('/product/getBaseCategoryList')
-        }catch(error){
-          alert(error.message)
-        }
+        //第一种方法 try{}catch{}
+        // try{
+        //   this.$store.dispatch('login',{mobile,password})
+        //   this.$router.replace('/')
+        // }catch(error){
+        //   alert(error.message)
+        // }
+
+        //第二种方法 .then(()=>{}).catch(error=>{})
+        // this.$store.dispatch('login',{mobile,password}).then(
+        //  ()=>{ this.$router.replace('/')}
+        // ).catch(error=>{
+        //   alert(error.message)
+        // })
+
+        //第三种方法 .then(value=>{},reason=>{})
+        this.$store.dispatch('login',{mobile,password}).then(
+          value=>{
+            this.$router.replace('/')
+          },reason=>{
+            alert(error.message)
+          }
+        )
       }
     }
   }

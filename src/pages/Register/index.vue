@@ -56,7 +56,7 @@
     name: 'Register',
     data(){
       return{
-        mobile:'13700000000',
+        mobile:'',
         password:'111111',
         password2:'111111',
         code:'',
@@ -68,7 +68,7 @@
         this.$refs.code.src=`/api/user/passport/code?time=${Date.now()}`
       },
 
-       submit(){
+    async submit(){
         const {mobile,password,password2,code,isAgree}=this
         if(!isAgree){
           alert('必须同意')
@@ -79,7 +79,7 @@
           return
         }
         try{
-          this.$store.dispatch('register',{mobile,password,code})
+        await this.$store.dispatch('register',{mobile,password,code})
           this.$router.replace('/login')
         }catch(error){
           console.log(error)
