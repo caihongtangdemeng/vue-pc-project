@@ -10,6 +10,11 @@ ajax.interceptors.request.use((config)=>{
   Nprogress.start()
 
   config.headers['userTempId']=store.state.user.userTempId
+
+  const token =store.state.user.userInfo.token
+  if(token){
+    config.headers['token']=token
+  }
   return config
 })
 ajax.interceptors.response.use(
