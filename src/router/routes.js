@@ -11,6 +11,7 @@ import PaySuccess from '@/pages/PaySuccess'
 import Center from '@/pages/Center'
 import MyOrder from '@/pages/Center/MyOrder'
 import GroupBuy from '@/pages/Center/GroupBuy'
+import store from '@/store'
 export default[
   {
     path:'/',
@@ -28,9 +29,19 @@ export default[
     component:Detail,
   }, 
   {
+    // c.只有携带的skuId和skuNum以及sessionStorage中有skuInfo数据, 才能查看添加购物车成功的界面
     name:'AddCartSuccess',
     path:'/addcartsuccess',
     component:AddCartSuccess,
+    beforeEnter(to,from,next){
+      const skuInfo=JSON.parse(window.sessionStorage.getItem('SKU_INFO_KEY'))
+      const {skuId,skuNum} =to.query
+      if(skuId&&skuNum&&skuInfo){
+        next()
+      }else{
+        next(from.path)
+      }
+    }
   },
   {
     name:'shopcart',
@@ -50,23 +61,57 @@ export default[
     component:Login,
     meta:{
       isHideFooter:true 
-    }
+    },
+    //路由独享守卫  未登录才能看到登录页面
+    // beforeEnter:(to,from,next)=>{
+    //   if(store.state.user.userInfo.name){
+    //     next('/')
+    //   }else{
+    //   next()
+    // }
+    // }
   }, 
   {
+    /*  d.只能从购物车界面, 才能跳转到交易界面 */
     path:'/trade',
     component:Trade,
+    beforeEnter(to,from,next){
+      if(from.path==='/shopcart'){
+        next()
+      }else{
+         next('/shopcart')
+      }
+    }
     
   }, 
   {
+    /* e.只能从交易界面, 才能跳转到支付界面 */
     path:'/pay',
     component:Pay,
    //把query参数映射成props传递给路由组件
-   props:route=>({orderId:route.query.orderId})
+   props:route=>({orderId:route.query.orderId}),
+
+   beforeEnter(to,from,next){
+     if(from.path==='/trade'){
+       next()
+     }else{
+       next('/trade')
+     }
+   }
   }, 
+
+
+    /* f.只有从支付界面, 才能跳转到支付成功的界面 */
   {
     path:'/paysuccess',
     component:PaySuccess,
-   
+   beforeEnter(to,from,next){
+     if(from.path==='/pay'){
+       next()
+     }else{
+       next('/pay')
+     }
+   }
   }, 
   {
     path:'/center',

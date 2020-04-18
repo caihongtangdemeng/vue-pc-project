@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import store from '@/store'
   export default {
     name: 'Login',
     data(){
@@ -100,6 +101,24 @@
             alert(error.message)
           }
         )
+      },
+
+      beforeRouteEnter:(to,from,next)=>{
+        if(store.state.user.userInfo.name){
+          next('/')
+        }else{
+          next()
+        }
+      
+
+      // next(component=>{
+      //   if(component.$store.state.user.userInfo.name){
+      //     next('/')
+      //   }else{
+      //     next()
+      //   }
+      // })
+
       }
     }
   }
