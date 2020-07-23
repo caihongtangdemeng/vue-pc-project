@@ -64,6 +64,7 @@
       logout(){
         try{
           this.$store.dispatch('logout')
+          this.$router.replace('/')
         }catch{
           throw new Error(error.message)
         }

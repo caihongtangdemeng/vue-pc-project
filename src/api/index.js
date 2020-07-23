@@ -22,3 +22,12 @@ export const reqDeleteCartItem=(skuId)=>ajax.delete(`/cart/deleteCart/${skuId}`)
 export const reqLogin=(mobile,password)=>ajax.post('/user/passport/login',{mobile,password}) //登录post请求
 export const reqRegister=(userInfo)=>ajax.post('/user/passport/register',userInfo)
 export const reqLogout=()=>ajax.get('/user/passport/logout')
+
+export const reqTradeInfo=()=>ajax.get('/order/auth/trade')
+export const reqMyOrders=(page,limit)=>ajax.get(`/order/auth/${page}/${limit}`)
+export const reqSubmitOrder=(tradeNo,orderInfo)=>ajax({
+  method:'POST',
+  url:'/order/auth/submitOrder',
+  params:{tradeNo},
+  data:orderInfo
+})
