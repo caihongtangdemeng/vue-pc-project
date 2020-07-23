@@ -6,9 +6,9 @@
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
 
-           <p v-if="userInfo.name">
+          <p v-if="userInfo.name">
             <span>{{userInfo.name}}</span>
-              &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
             <a href="javascript:" @click="logout">退出登录</a>
           </p>
           <p v-else>
@@ -47,55 +47,72 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import {
+    mapState
+  } from 'vuex'
   export default {
     name: 'Header',
-    data(){
-      return{
-        keyword:''
+    data() {
+      return {
+        keyword: ''
       }
     },
-    computed:{
+    computed: {
       ...mapState({
-        userInfo:state=>state.user.userInfo
+        userInfo: state => state.user.userInfo
       })
     },
     methods: {
-      logout(){
-        try{
+      logout() {
+        try {
           this.$store.dispatch('logout')
           this.$router.replace('/')
-        }catch{
+        } catch {
           throw new Error(error.message)
         }
       },
       toSearch() {
-        const {path,query}=this.$route
-        if(this.keyword){
-          if(path.indexOf('/search')===0){ //关键字跳转在搜索页面
+        const {
+          path,
+          query
+        } = this.$route
+        if (this.keyword) {
+          if (path.indexOf('/search') === 0) { //关键字跳转在搜索页面
             this.$router.push({
-              name:'search',
-              params:{keyword:this.keyword},
+              name: 'search',
+              params: {
+                keyword: this.keyword
+              },
               query
             })
-          }else{
-              //关键字跳转不在搜索页面
-            this.$router.push({name:'search',params:{keyword:this.keyword}})
+          } else {
+            //关键字跳转不在搜索页面
+            this.$router.push({
+              name: 'search',
+              params: {
+                keyword: this.keyword
+              }
+            })
           }
-        }else{
-           if(path.indexOf('/search')===0){ //分类跳转在搜索页面
-            this.$router.push({name:'search',query})
-          }else{
-              //分类跳转不在搜索页面
-          this.$router.push({name:'search'})
+        } else {
+          if (path.indexOf('/search') === 0) { //分类跳转在搜索页面
+            this.$router.push({
+              name: 'search',
+              query
+            })
+          } else {
+            //分类跳转不在搜索页面
+            this.$router.push({
+              name: 'search'
+            })
           }
         }
       }
     },
-    mounted(){
+    mounted() {
       // 通过全局总线绑定removeKeyword事件监听
-      this.$bus.$on('removeKeyword',()=>{
-        this.keyword=''
+      this.$bus.$on('removeKeyword', () => {
+        this.keyword = ''
       })
     }
   }
